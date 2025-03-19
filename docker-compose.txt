@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  webhook-processor:
+    build:
+      context: .
+      dockerfile: Dockerfile.processor
+    ports:
+      - "5000:5000"
+    environment:
+      - WEBHOOK_ENDPOINT=http://notification-receiver:5001/notify
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - notification-receiver
+
+  notification-receiver:
+    build:
+      context: .
+      dockerfile: Dockerfile.receiver
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  data:
+  logs:
